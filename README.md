@@ -48,7 +48,7 @@ areanetwork/
 - **WebServer**: Serves HTTP requests
 - **client1, client2, client3**: Simulate normal, compromised, and attacker clients
 
-![](sample_topology.png) <!-- (optional: insert your own screenshot if available) -->
+![](ned_simulation.png) <!-- (optional: insert your own screenshot if available) -->
 
 ---
 
@@ -100,4 +100,5 @@ Topology in `simulations/ComputerNetwork.ned` - you can add/remove clients, adju
 Watch the simulation to see compromised clients, DNS and HTTP traffic, and real-time protocol statistics.
 
 ---
+
 
