@@ -89,6 +89,16 @@ Topology in `simulations/ComputerNetwork.ned` - you can add/remove clients, adju
 
 ---
 
+## 📈 Simulation Results
+Example Run Statistics:
+
+- **Attack Success Rate: 100% (rogue server wins in current configuration)**
+- **Average Queue Length: 1–3 packets**
+- **Service Time per Packet: 0.01s**
+- **Total Packets Processed: 42 (example run)**
+
+---
+
 ## 📚 How It Works
 
 1. **Clients** boot and try to get an IP via DHCP.
@@ -100,5 +110,6 @@ Topology in `simulations/ComputerNetwork.ned` - you can add/remove clients, adju
 Watch the simulation to see compromised clients, DNS and HTTP traffic, and real-time protocol statistics.
 
 ---
+
 
 
