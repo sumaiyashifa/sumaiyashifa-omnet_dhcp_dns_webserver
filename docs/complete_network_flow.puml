@@ -1,0 +1,136 @@
+@startuml
+title Complete Network Flow - Area Network Simulation
+
+' Participants
+participant "Computer\n(Client)" as client
+participant Router
+participant "DHCP Server\n(Legitimate)" as dhcp
+participant "DHCP Server\n(Rogue)" as rogue
+participant "DNS Server" as dns
+participant "Web Server" as web
+
+' Styling
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 250
+
+' Initialize simulation
+note over client: initialize():\nSet up timers & statistics\ndhcpTimeStats, packetsSent\npacketsReceived vectors
+
+note over Router: initialize():\nEmpty FIFO queue\nSet serviceTime = 0.01
+client -> client: scheduleAt(simTime() + uniform(0,2), dhcpTimer)
+
+' === DHCP Phase ===
+group DHCP Phase
+    client -> Router: DHCP_DISCOVER
+    activate Router
+    Router -> Router: enqueue packet
+    note right of Router: Queue length++\nDisplay updated
+    
+    Router -> Router: processPacket()\n(after serviceTime delay)
+    Router -> dhcp: DHCP_DISCOVER + clientPort
+    Router -> rogue: DHCP_DISCOVER + clientPort
+    deactivate Router
+    
+    activate rogue
+    note over rogue: nextIP = 100\n(starts at 192.168.10.100)
+    rogue --> Router: DHCP_OFFER\n(IP: 192.168.10.x, Gateway: 10.0.0.100)
+    deactivate rogue
+    
+    activate Router
+    Router -> Router: enqueue packet
+    Router -> Router: processPacket()
+    Router -> client: DHCP_OFFER (from Rogue)
+    deactivate Router
+    
+    activate dhcp
+    note over dhcp: nextIP = 1\n(starts at 192.168.10.1)
+    dhcp --> Router: DHCP_OFFER\n(IP: 192.168.10.x, Gateway: 192.168.10.100)
+    deactivate dhcp
+    
+    activate Router
+    Router -> Router: enqueue packet
+    Router -> Router: processPacket()
+    Router -> client: DHCP_OFFER (from DHCP)
+    deactivate Router
+    
+    client -> Router: DHCP_REQUEST
+    
+    activate Router
+    Router -> Router: enqueue packet
+    Router -> Router: processPacket()
+    Router -> rogue: DHCP_REQUEST
+    Router -> dhcp: DHCP_REQUEST
+    deactivate Router
+    
+    rogue --> Router: DHCP_ACK
+    activate Router
+    Router -> Router: enqueue packet
+    Router -> Router: processPacket()
+    Router -> client: DHCP_ACK
+    deactivate Router
+    
+    note over client: Record DHCP time\nSet hasIP = true\nCancel DHCP timer\nSchedule packet timer
+end
+
+' === DNS Phase ===
+group DNS Resolution
+    client -> client: startWebAccess()
+    note over client: webAccessCount++\npendingQueryId = packetCounter++
+    
+    client -> Router: DNS_QUERY\n(domain="google.com", queryId)
+    activate Router
+    Router -> Router: enqueue packet
+    Router -> Router: processPacket()
+    Router -> dns: DNS_QUERY
+    deactivate Router
+    
+    activate dns
+    note over dns: Lookup in dnsTable\n"google.com" -> "192.168.10.21"
+    dns --> Router: DNS_RESPONSE\n(IP="192.168.10.21", queryId)
+    deactivate dns
+    
+    activate Router
+    Router -> Router: enqueue packet
+    Router -> Router: processPacket()
+    Router -> client: DNS_RESPONSE
+    deactivate Router
+    
+    note over client: Store resolvedWebServerIP\nwaitingForDNS = false
+end
+
+' === HTTP Phase ===
+group HTTP Communication
+    client -> client: sendHttpRequest(resolvedIP)
+    
+    client -> Router: HTTP_REQUEST\n(DataPacket with GET /index.html)
+    activate Router
+    Router -> Router: enqueue packet
+    note right Router: httpRequests++\nhttpPackets++
+    Router -> Router: processPacket()
+    Router -> web: HTTP_REQUEST
+    deactivate Router
+    
+    activate web
+    note over web: requestsProcessed++
+    web --> Router: HTTP_RESPONSE\n(DataPacket with 200 OK)
+    deactivate web
+    
+    activate Router
+    Router -> Router: enqueue packet
+    note right Router: httpResponses++\nhttpPackets++
+    Router -> Router: processPacket()
+    Router -> client: HTTP_RESPONSE
+    deactivate Router
+    
+    note over client: packetCounter++\nSchedule next web access
+end
+
+' === Statistics & Display ===
+group Continuous Statistics
+    note over Router: refreshDisplay():\nShow queue length\nDHCP/DNS/HTTP counters
+    note over client: refreshDisplay():\nShow IP, Gateway, Packets\nRecord vectors
+    note over web: refreshDisplay():\nShow requests processed
+    note over dns: refreshDisplay():\nShow queries processed
+end
+
+@enduml

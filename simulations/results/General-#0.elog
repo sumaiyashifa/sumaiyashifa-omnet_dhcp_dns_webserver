@@ -1,0 +1,115 @@
+SB ov 1538 ev 2 rid General-0-20251107-14:09:44-24492
+
+E # 0 t 0 m 1 ce -1 msg -1
+MC id 1 c omnetpp::cModule t areanetwork.simulations.ComputerNetwork n ComputerNetwork cm 1
+MDC id 1 d bgb=800,500
+MC id 2 c DHCPServer t areanetwork.simulations.DHCPServer pid 1 n dhcpServer
+GC m 2 g 0 n port$i o 0
+GC m 2 g 1 n port$o o 1
+MDC id 2 d "p=225,88;i=device/server;t=DHCP Server"
+MC id 3 c RogueDHCPServer t areanetwork.simulations.RogueDHCPServer pid 1 n rogueDhcp
+GC m 3 g 0 n port$i o 0
+GC m 3 g 1 n port$o o 1
+MDC id 3 d "p=118,172;i=device/server;is=r;t=Rogue DHCP"
+MC id 4 c DnsServer t areanetwork.simulations.DnsServer pid 1 n dnsServer
+GC m 4 g 0 n port$i o 0
+GC m 4 g 1 n port$o o 1
+MDC id 4 d "p=584,105;i=device/server;t=DNS Server"
+MC id 5 c WebServer t areanetwork.simulations.WebServer pid 1 n webServer
+GC m 5 g 0 n port$i o 0
+GC m 5 g 1 n port$o o 1
+MDC id 5 d "p=710,184;i=device/server;t=Web Server"
+MC id 6 c Router t areanetwork.simulations.Router pid 1 n router
+MDC id 6 d "p=400,250;i=device/router;t=Router (FIFO)"
+GC m 6 g 1048576 n port$i i 0 o 0
+GC m 6 g 1572864 n port$o i 0 o 1
+GC m 6 g 1048577 n port$i i 1 o 0
+GC m 6 g 1572865 n port$o i 1 o 1
+GC m 6 g 1048578 n port$i i 2 o 0
+GC m 6 g 1572866 n port$o i 2 o 1
+GC m 6 g 1048579 n port$i i 3 o 0
+GC m 6 g 1572867 n port$o i 3 o 1
+GC m 6 g 1048580 n port$i i 4 o 0
+GC m 6 g 1572868 n port$o i 4 o 1
+GC m 6 g 1048581 n port$i i 5 o 0
+GC m 6 g 1572869 n port$o i 5 o 1
+GC m 6 g 1048582 n port$i i 6 o 0
+GC m 6 g 1572870 n port$o i 6 o 1
+MC id 7 c Computer t areanetwork.simulations.Computer pid 1 n client1
+GC m 7 g 0 n port$i o 0
+GC m 7 g 1 n port$o o 1
+MDC id 7 d p=150,400;i=device/pc;t=Client1
+MC id 8 c Computer t areanetwork.simulations.Computer pid 1 n client2
+GC m 8 g 0 n port$i o 0
+GC m 8 g 1 n port$o o 1
+MDC id 8 d p=400,400;i=device/pc;t=Client2
+MC id 9 c Computer t areanetwork.simulations.Computer pid 1 n client3
+GC m 9 g 0 n port$i o 0
+GC m 9 g 1 n port$o o 1
+MDC id 9 d p=650,400;i=device/pc;t=Client3
+CC sm 2 sg 1 dm 6 dg 1048576
+CC sm 6 sg 1572864 dm 2 dg 0
+CC sm 3 sg 1 dm 6 dg 1048582
+CC sm 6 sg 1572870 dm 3 dg 0
+CC sm 4 sg 1 dm 6 dg 1048577
+CC sm 6 sg 1572865 dm 4 dg 0
+CC sm 5 sg 1 dm 6 dg 1048581
+CDC sm 5 sg 1 d ""
+CC sm 6 sg 1572869 dm 5 dg 0
+CDC sm 6 sg 1572869 d ""
+CC sm 6 sg 1572866 dm 7 dg 0
+CC sm 7 sg 1 dm 6 dg 1048578
+CC sm 6 sg 1572867 dm 8 dg 0
+CC sm 8 sg 1 dm 6 dg 1048579
+CC sm 6 sg 1572868 dm 9 dg 0
+CC sm 9 sg 1 dm 6 dg 1048580
+CMB sm 1 tm 2 m initialize(0)
+- INFO: DHCP Server initialized
+CME
+CMB sm 1 tm 3 m initialize(0)
+- INFO: Rogue DHCP Server initialized
+CME
+CMB sm 1 tm 4 m initialize(0)
+- INFO: DNS Server initialized
+- INFO: DNS Table initialized with 7 entries
+CME
+CMB sm 1 tm 5 m initialize(0)
+- INFO: Web Server initialized
+CME
+CMB sm 1 tm 6 m initialize(0)
+- INFO: Router initialized with FIFO queue
+CME
+CMB sm 1 tm 7 m initialize(0)
+- INFO: Computer client1 starting
+CM id 0 tid 0 eid 0 etid 0 c omnetpp::cMessage n DHCP_Timer pe -1
+CM id 1 tid 1 eid 1 etid 1 c omnetpp::cMessage n Packet_Timer pe -1
+BS id 0 tid 0 eid 0 etid 0 c omnetpp::cMessage n DHCP_Timer sm 7 st 0 am 7 at 1.097627004609 pe 0
+ES id 0 tid 0 eid 0 etid 0 c omnetpp::cMessage n DHCP_Timer sm 7 st 0 am 7 at 1.097627004609 pe 0
+CME
+CMB sm 1 tm 8 m initialize(0)
+- INFO: Computer client2 starting
+CM id 2 tid 2 eid 2 etid 2 c omnetpp::cMessage n DHCP_Timer pe -1
+CM id 3 tid 3 eid 3 etid 3 c omnetpp::cMessage n Packet_Timer pe -1
+BS id 2 tid 2 eid 2 etid 2 c omnetpp::cMessage n DHCP_Timer sm 8 st 0 am 8 at 1.185689232778 pe 0
+ES id 2 tid 2 eid 2 etid 2 c omnetpp::cMessage n DHCP_Timer sm 8 st 0 am 8 at 1.185689232778 pe 0
+CME
+CMB sm 1 tm 9 m initialize(0)
+- INFO: Computer client3 starting
+CM id 4 tid 4 eid 4 etid 4 c omnetpp::cMessage n DHCP_Timer pe -1
+CM id 5 tid 5 eid 5 etid 5 c omnetpp::cMessage n Packet_Timer pe -1
+BS id 4 tid 4 eid 4 etid 4 c omnetpp::cMessage n DHCP_Timer sm 9 st 0 am 9 at 1.430378729943 pe 0
+ES id 4 tid 4 eid 4 etid 4 c omnetpp::cMessage n DHCP_Timer sm 9 st 0 am 9 at 1.430378729943 pe 0
+CME
+MDC id 2 d "p=225,88;i=device/server;t=DHCP Server\nNext IP: 192.168.10.1\nGateway: 192.168.10.100"
+MDC id 3 d "p=118,172;i=device/server;is=r;t=🚨 Rogue DHCP\nNext IP: 192.168.10.1\nGateway: 10.0.0.100"
+MDC id 4 d "p=584,105;i=device/server;t=DNS Server\nQueries: 0"
+MDC id 5 d "p=710,184;i=device/server;t=Web Server\nRequests: 0"
+MDC id 6 d "p=400,250;i=device/router;t=Router (FIFO)\nProcessed: 0\nIn Queue: 0\nDHCP: 0  DNS: 0\nHTTP Req: 0  Resp: 0"
+MDC id 7 d p=150,400;i=device/pc,yellow;t=Client1
+MDC id 7 d "p=150,400;i=device/pc,yellow;t=No IP\nRetry: 0"
+MDC id 8 d p=400,400;i=device/pc,yellow;t=Client2
+MDC id 8 d "p=400,400;i=device/pc,yellow;t=No IP\nRetry: 0"
+MDC id 9 d p=650,400;i=device/pc,yellow;t=Client3
+MDC id 9 d "p=650,400;i=device/pc,yellow;t=No IP\nRetry: 0"
+
+SE e 0 c -1 m ""

@@ -1,0 +1,58 @@
+@startuml
+title DHCP Flow in Area Network Simulation
+
+participant "Computer\n(Client)" as client
+participant Router
+participant "Legitimate\nDHCP Server" as dhcp
+participant "Rogue\nDHCP Server" as rogue
+
+note over client: Initialize():\nSchedule DHCP Timer
+activate client
+
+client -> client: startDHCP()
+client -> Router: DHCP_DISCOVER
+activate Router
+
+Router -> Router: enqueue packet
+Router -> Router: processPacket()
+note right of Router: Duplicate message\nand add clientPort
+
+Router -> dhcp: DHCP_DISCOVER\n(with clientPort)
+activate dhcp
+Router -> rogue: DHCP_DISCOVER\n(with clientPort)
+activate rogue
+
+note over rogue: Process faster\n(malicious)
+rogue --> Router: DHCP_OFFER\n(IP: 192.168.10.x\nGateway: 10.0.0.100)
+deactivate rogue
+
+Router -> client: DHCP_OFFER\n(from Rogue)
+activate client
+
+dhcp --> Router: DHCP_OFFER\n(IP: 192.168.10.x\nGateway: 192.168.10.100)
+deactivate dhcp
+
+Router -> client: DHCP_OFFER\n(from Legitimate)
+note over client: First offer wins\n(usually rogue)
+
+client -> Router: DHCP_REQUEST\n(requesting offered IP)
+Router -> dhcp: DHCP_REQUEST
+activate dhcp
+Router -> rogue: DHCP_REQUEST
+activate rogue
+
+rogue --> Router: DHCP_ACK\n(with malicious gateway)
+deactivate rogue
+Router -> client: DHCP_ACK
+
+note over client: If gateway = 10.0.0.100:\nCompromised!\nTraffic will go to rogue
+
+dhcp --> Router: DHCP_ACK\n(too late - client already\naccepted rogue offer)
+deactivate dhcp
+
+client -> client: Set IP & Gateway\nSchedule Web Timer
+deactivate client
+
+note over client, rogue: After DHCP:\nClient begins DNS/HTTP\ntraffic using assigned gateway
+
+@enduml
